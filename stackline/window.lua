@@ -20,7 +20,7 @@ function Window:new(hsWin) -- {{{
     setmetatable(ws, self)
     self.__index = self
 
-    log.i( ('Window:new(%s)'):format(ws.id) )
+    log.i( ('Window:new(%s, %s)'):format(ws.id, ws.app) )
 
     return ws
 end -- }}}
@@ -39,7 +39,7 @@ function Window:isStackFocused() -- {{{
 end -- }}}
 
 function Window:setupIndicator() -- {{{
-    log.d('setupIndicator for', self.id)
+    log.d('setupIndicator for', self.id, self.app)
     self.config = stackline.config:get('appearance')
     local c = self.config
     self.showIcons = c.showIcons
@@ -80,7 +80,7 @@ function Window:setupIndicator() -- {{{
 end -- }}}
 
 function Window:drawIndicator(overrideOpts) -- {{{
-    log.i('drawIndicator for', self.id)
+    log.i('drawIndicator for', self.id, self.app)
     -- should there be a dedicated "Indicator" class to perform the actual drawing?
     local opts = u.extend(self.config, overrideOpts or {})
     local radius = self.showIcons and self.iconRadius or opts.radius
@@ -128,7 +128,7 @@ function Window:drawIndicator(overrideOpts) -- {{{
 end -- }}}
 
 function Window:redrawIndicator() -- {{{
-    log.i('redrawIndicator for', self.id)
+    log.i('redrawIndicator for', self.id, self.app)
     local isWindowFocused = self:isFocused()
     local isStackFocused = self:isStackFocused()
 
@@ -335,22 +335,24 @@ function Window:makeStackId(hsWin) -- {{{
     local roundToFuzzFactor = u.partial(u.roundToNearest, fuzzFactor)
     local ff = u.map({x, y, w, h}, roundToFuzzFactor)
 
-    return {
+    local info = {
         topLeft = table.concat({x, y}, '|'),
         stackId = table.concat({x, y, w, h}, '|'),
         fzyFrame = table.concat(ff, '|'),
     }
+    log.d('makeStackId:', info)
+    return info
 end -- }}}
 
 function Window:deleteIndicator() -- {{{
-    log.d('deleteIndicator for', self.id)
+    log.d('deleteIndicator for', self.id, self.app)
     if self.indicator then
         self.indicator:delete(self.config.fadeDuration)
     end
 end -- }}}
 
 function Window:unfocusOtherAppWindows() -- {{{
-    log.i('unfocusOtherAppWindows for', self.id)
+    log.i('unfocusOtherAppWindows for', self.id, self.app)
     u.each(self.otherAppWindows, function(w)
         w:redrawIndicator()
     end)

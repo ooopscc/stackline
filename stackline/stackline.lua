@@ -133,6 +133,7 @@ function stackline.redrawWinIndicator(hsWin, _app, _evt) -- {{{
        faster than deleting the entire indicator & rebuilding it from scratch,
        particularly since this skips querying the app icon & building the icon image.
     ]]
+    log.i('Redrawing win indicator for', hsWin:title(), hsWin:id())
     local stackedWin = stackline.manager:findWindow(hsWin:id())
     if not stackedWin then return end -- if non-existent, the focused win is not stacked
     stackedWin:redrawIndicator()

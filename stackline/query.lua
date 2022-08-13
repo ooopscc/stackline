@@ -13,7 +13,7 @@ local function yabai(command, callback) -- {{{
 end  -- }}}
 
 local function stackIdMapper(yabaiWindow) -- {{{
-    -- u.p(yabaiWindow)
+    log.i('stackIdMapper: yabaiWindow:', yabaiWindow, type(yabaiWindow))
     local res = {}
     if type(yabaiWindow)~='table' then u.p(yabaiWindow) end
     for _,win in pairs(yabaiWindow or {}) do
@@ -21,6 +21,7 @@ local function stackIdMapper(yabaiWindow) -- {{{
             res[tostring(win.id)] = win['stack-index']
         end
     end
+    u.p(res)
     return res
 end  -- }}}
 
@@ -140,7 +141,7 @@ local function run(opts) -- {{{
     local shouldRefresh = spaceHasStacks and shouldRestack(byStack) -- Don't even check on a space that doesn't have any stacks
 
     if shouldRefresh or opts.forceRedraw then
-        log.i('Refreshing stackline')
+        log.i('Refreshing stackline', yabaiRes)
         -- TODO: if there's only 1 space, use 'query --windows --space' to reduce chance that parsing fails
         local yabai_cmd = 'query --windows'
 
